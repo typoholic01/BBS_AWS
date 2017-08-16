@@ -41,8 +41,8 @@ public class BBSService implements BBSServiceImpl
 	}
 
 	@Override
-	public void updateBbs(int seq) {
-		dao.updateBbs(seq);
+	public void updateBbs(int seq, BBSDto dto) {
+		dao.updateBbs(seq, dto);
 		
 	}
 

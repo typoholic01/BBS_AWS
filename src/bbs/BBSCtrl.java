@@ -39,8 +39,8 @@ public class BBSCtrl
 	public BBSDto getBbs(int seq) {
 		return bbsSer.getBbs(seq);
 	}
-	public void updateBbs(int seq) {
-		bbsSer.updateBbs(seq);
+	public void updateBbs(int seq, BBSDto dto) {
+		bbsSer.updateBbs(seq, dto);
 		
 	}
 	public void deleteBbs(int seq) {

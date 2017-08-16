@@ -280,9 +280,19 @@ public class BBSDao implements BBSDaoImpl
 	}
 
 	@Override
-	public void updateBbs(int seq) {
-		String sql = " UPDATE INTO BBS( "
+	public void updateBbs(int seq, BBSDto dto) {
+		String sql = " UPDATE BBS SET "
+				+ " TITLE = ?, "
+				+ " CONTENT = ? "
 				+ " WHERE SEQ = ? ";
+		
+		List<Object> queryList = new ArrayList<>();
+		
+		queryList.add(dto.getTitle());
+		queryList.add(dto.getContent());
+		queryList.add(seq);
+		
+		DBConnection.executeUpdate(sql, queryList);
 		
 	}
 

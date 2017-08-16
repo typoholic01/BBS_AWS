@@ -46,6 +46,7 @@ public class BoardFrontController extends HttpServlet {
 		
 		String category,user_id,title,content,status;		//param
 		int seq;
+		BBSDto bbs = null;
 		switch (command) {
 /*		case "/bbs/notice/write":
 			
@@ -70,7 +71,7 @@ public class BoardFrontController extends HttpServlet {
 			seq = Integer.parseInt(req.getParameter("seq"));
 			
 			//게시물을 받아온다
-			BBSDto bbs = d.BBSCtrl.getBbs(seq);
+			bbs = d.BBSCtrl.getBbs(seq);
 			
 			//req에 넣는다
 			req.setAttribute("bbs", bbs);
@@ -83,7 +84,24 @@ public class BoardFrontController extends HttpServlet {
 			//seq를 받아온다
 			seq = Integer.parseInt(req.getParameter("seq"));
 			
-			d.BBSCtrl.updateBbs(seq);
+			//게시물을 받아온다
+			bbs = d.BBSCtrl.getBbs(seq);
+			
+			//req에 넣는다
+			req.setAttribute("bbs", bbs);
+			
+			//보내기
+			dispatch("/board/bbs_notice_update.jsp", req, resp);
+			
+		case "/bbs/notice/modifyAf":
+			//seq를 받아온다
+			seq = Integer.parseInt(req.getParameter("seq"));
+			title = req.getParameter("title");
+			content = req.getParameter("content");
+			
+			BBSDto dto = new BBSDto(title, content);
+			
+			d.BBSCtrl.updateBbs(seq,dto);
 			
 			//보내기
 			dispatch("/board/bbs_notice_detail.jsp", req, resp);

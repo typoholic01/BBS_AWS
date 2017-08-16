@@ -49,6 +49,12 @@ public class BBSDto implements Serializable
 		this.reply = reply;
 	}	
 
+	public BBSDto(String title, String content) {
+		super();
+		this.title = title;
+		this.content = content;
+	}
+
 	@Override
 	public String toString() {
 		return "BBSDto [seq=" + seq + ", category=" + category + ", user_id=" + user_id + ", title=" + title
