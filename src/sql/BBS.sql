@@ -37,6 +37,6 @@ limit 0, 10
 
 (select * from (select ifnull(max(seq),0)+1 from BBS) as a)
 
-SELECT seq,category,user_id,title,content,status,count,create_at,updated_at,ancestor,reply FROM BBS  WHERE category = 'notice'  AND &s_type=title LIKE %&q=Hi% ORDER BY ancestor desc,reply asc  limit 0,10
+SELECT seq,category,user_id,title,content,status,count,create_at,updated_at,ancestor,reply FROM BBS  WHERE category = 'notice'  AND title LIKE '%%' ORDER BY ancestor desc,reply asc  limit 0,10
 
-UPDATE BBS SET TITLE = '안녕',  CONTENT = '방가'  WHERE SEQ = 6
+UPDATE BBS SET TITLE = '안녕',  CONTENT = '방가'  WHERE SEQ = 3

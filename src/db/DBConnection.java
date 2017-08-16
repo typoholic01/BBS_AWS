@@ -59,7 +59,7 @@ public class DBConnection {
 		}
 	}	
 	
-	public static boolean executeUpdate(String sql, List<Object> queryList) {
+	public static boolean executeUpdates(String sql, List<Object> queryList) {
 		
 		Connection conn = null;
 		PreparedStatement psmt = null;		
@@ -93,6 +93,7 @@ public class DBConnection {
 	}
 	
 	public static boolean executeUpdate(String sql, Object query) {
+		System.out.println("query입니다");
 		
 		Connection conn = null;
 		PreparedStatement psmt = null;		
@@ -101,7 +102,6 @@ public class DBConnection {
 		
 		try {
 			conn = getConnection();
-			System.out.println("2/6 S writeBbs");
 			
 			psmt = conn.prepareStatement(sql);
 			

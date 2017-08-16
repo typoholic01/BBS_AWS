@@ -8,7 +8,7 @@
 <head>
 <script type="text/javascript">
 var pageUrl = "?seq=" + ${ param.seq };
-window.history.pushState(null, '', "${pageContext.request.contextPath}/bbs/notice/detail"+pageUrl);
+window.history.replaceState(null, '', "${pageContext.request.contextPath}/bbs/notice/detail"+pageUrl);
 </script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -82,10 +82,3 @@ name="content">${bbs.content }
 
 </body>
 </html>
-
-
-
-
-
-
-

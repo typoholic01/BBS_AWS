@@ -104,7 +104,7 @@ public class BBSDao implements BBSDaoImpl
 		queryList.add(bbs.getContent());
 		queryList.add(bbs.getStatus());
 		
-		return DBConnection.executeUpdate(sql, queryList);
+		return DBConnection.executeUpdates(sql, queryList);
 	}
 
 	//리스트 가져오기
@@ -288,11 +288,14 @@ public class BBSDao implements BBSDaoImpl
 		
 		List<Object> queryList = new ArrayList<>();
 		
+		System.out.println(dto.toString());
+		System.out.println(seq);
+		
 		queryList.add(dto.getTitle());
 		queryList.add(dto.getContent());
 		queryList.add(seq);
 		
-		DBConnection.executeUpdate(sql, queryList);
+		DBConnection.executeUpdates(sql, queryList);
 		
 	}
 

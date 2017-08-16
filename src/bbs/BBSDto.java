@@ -47,7 +47,7 @@ public class BBSDto implements Serializable
 		this.update_at = update_at;
 		this.ancestor = ancestor;
 		this.reply = reply;
-	}	
+	}
 
 	public BBSDto(String title, String content) {
 		super();
