@@ -45,7 +45,7 @@ public class BoardFrontController extends HttpServlet {
 		resp.setContentType("text/html; charset=UTF-8");
 		
 		String category,user_id,title,content,status;		//param
-		
+		int seq;
 		switch (command) {
 /*		case "/bbs/notice/write":
 			
@@ -65,56 +65,9 @@ public class BoardFrontController extends HttpServlet {
 			dispatch("/bbs/notice/list", req, resp);		
 			break;
 			
-		/*case "/bbs/notice/list":			
-			//페이징 상수 초기화
-			PaginationBeans paging = PaginationBeans.getInstance();
-			
-			paging.setTotal_article(d.BBSCtrl.getTotalArticle());
-
-			int cur_page = 0;
-			if (req.getParameter("p") != null) {
-				cur_page = Integer.parseInt(req.getParameter("p"));				
-			}
-			
-			//잘못된 페이지 번호가 넘어왔을때 교정한다
-			if (cur_page <= 0) {
-				cur_page = 1;
-			} else if (cur_page > paging.getTotal_article()) {
-				cur_page = paging.getTotal_article();
-			}
-			
-			//리스트 시작 번호를 세팅한다
-			int start_page = cur_page-(cur_page-1)%10;
-			int end_page = start_page+paging.page_limit - 1;
-			
-			//end_page의 한계를 설정한다
-			if (end_page*paging.article_limit > paging.getTotal_article()) {
-				// 1의 자리수를 빼고 더한다
-				end_page = paging.getTotal_article()/paging.article_limit;				
-				// 1의 자리수가 1이라도 있으면 페이지를 추가한다
-				end_page += (paging.getTotal_article()%paging.article_limit > 0)?1:0;	
-			}
-			
-			//번호를 세팅한다
-			paging.setCur_page(cur_page);
-			paging.setStart_page(start_page);
-			paging.setEnd_page(end_page);
-			
-			//리퀘스트를 세팅한다
-			req.setAttribute("paging", paging);
-			
-			//리스트 가져오기
-			List<BBSDto> bbsList = d.BBSCtrl.getBbsList(cur_page);
-
-			req.setAttribute("bbsList", bbsList);
-			
-			//보내기
-			dispatch("/board/bbs_notice_list.jsp", req, resp);				
-			break;*/
-			
 		case "/bbs/notice/detail":	
 			//seq를 받아온다
-			int seq = Integer.parseInt(req.getParameter("seq"));
+			seq = Integer.parseInt(req.getParameter("seq"));
 			
 			//게시물을 받아온다
 			BBSDto bbs = d.BBSCtrl.getBbs(seq);
@@ -125,6 +78,24 @@ public class BoardFrontController extends HttpServlet {
 			//보내기
 			dispatch("/board/bbs_notice_detail.jsp", req, resp);	
 			break;
+			
+		case "/bbs/notice/modify":
+			//seq를 받아온다
+			seq = Integer.parseInt(req.getParameter("seq"));
+			
+			d.BBSCtrl.updateBbs(seq);
+			
+			//보내기
+			dispatch("/board/bbs_notice_detail.jsp", req, resp);
+			
+		case "/bbs/notice/delete":
+			//seq를 받아온다
+			seq = Integer.parseInt(req.getParameter("seq"));
+			
+			d.BBSCtrl.deleteBbs(seq);
+			
+			//보내기
+			dispatch("/board/bbs_notice_list.jsp", req, resp);
 			
 		default:
 			break;

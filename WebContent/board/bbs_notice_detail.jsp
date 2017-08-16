@@ -73,8 +73,8 @@ name="content">${bbs.content }
 </tr>
 </table>
 <c:if test="${login.email == bbs.user_id }">
-<button onclick="location.href()">수정</button>
-<button>삭제</button>
+<button onclick="location.href='./modify?seq=${bbs.seq}'">수정</button>
+<button onclick="location.href='./delete?seq=${bbs.seq}'">삭제</button>
 </c:if>
 </div>
 

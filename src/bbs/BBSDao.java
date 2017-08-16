@@ -277,5 +277,23 @@ public class BBSDao implements BBSDaoImpl
 			DBConnection.close(conn, psmt, rs);
 		}		
 		return bbs;
+	}
+
+	@Override
+	public void updateBbs(int seq) {
+		String sql = " UPDATE INTO BBS( "
+				+ " WHERE SEQ = ? ";
+		
+	}
+
+	@Override
+	public void deleteBbs(int seq) {
+		String sql = " DELETE FROM BBS "
+				+ " WHERE SEQ = ? ";
+		
+		Object query = seq;
+		
+		DBConnection.executeUpdate(sql, query);
+		
 	}	
 }

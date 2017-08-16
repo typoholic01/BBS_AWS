@@ -40,4 +40,16 @@ public class BBSService implements BBSServiceImpl
 		return dao.getBbsList(cur_page, s_type, q);
 	}
 
+	@Override
+	public void updateBbs(int seq) {
+		dao.updateBbs(seq);
+		
+	}
+
+	@Override
+	public void deleteBbs(int seq) {
+		dao.deleteBbs(seq);
+		
+	}
+
 }
