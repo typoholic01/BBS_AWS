@@ -2,6 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <% request.setCharacterEncoding("utf-8"); %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -47,6 +48,10 @@ input {
 	<td>${bbs.seq } </td>
 </tr>
 <tr>
+	<td>아이디</td>
+	<td>${bbs.user_id } </td>
+</tr>
+<tr>
 	<td>제목</td>
 	<td>${bbs.title } </td>
 </tr>
@@ -67,20 +72,10 @@ name="content">${bbs.content }
 </td>
 </tr>
 </table>
-<%-- 
-<form action="answer.jsp" method="post">
-<input type="hidden" name='seq' value="<%=bbs.getSeq() %>">
-<input type="submit" value="답글">
-</form>
- --%>
-
-<%-- <button type="button" onclick="answerbbs('<%=bbs.getSeq() %>')">답글</button> 
-
-<%if(bbs.getId().equals(mem.getId())){ %>
-<button type="button" onclick="deletebbs('<%=bbs.getSeq() %>')">삭제</button>
-<button type="button" onclick="updatebbs('<%=bbs.getSeq() %>')">수정</button>
- <%} %> --%>
-
+<c:if test="${login.email == bbs.user_id }">
+<button onclick="location.href()">수정</button>
+<button>삭제</button>
+</c:if>
 </div>
 
 <a href='./list'>글 목록</a>

@@ -1,3 +1,5 @@
+drop table member;
+
 CREATE TABLE member(
 	email VARCHAR(255) NOT NULL,
 	pw VARCHAR(255) NOT NULL,

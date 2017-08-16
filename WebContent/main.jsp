@@ -6,20 +6,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
-<% 
-	MemberDto login = (MemberDto)request.getAttribute("login"); 
-
-	session.setAttribute("login", login);
-	
-	if (login == null) {
-		out.println("로그인을 실패하였습니다");
-	}
-%>
 </head>
 <body>
 <h1>여기가 main.jsp입니다</h1>
-<h1>이메일: </h1><%=login.getEmail() %>
-<h1>이름: </h1><%=login.getName() %> <br />
+<h1>이메일: </h1>${login.email }
+<h1>이름: </h1>${login.name } <br />
 <a href="./login">로그인</a><br>	
 <a href="./register">회원가입</a><br>	
 <a href="../bbs/notice/write">공지사항 게시판 글쓰기</a><br>	 
