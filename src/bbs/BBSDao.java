@@ -314,11 +314,27 @@ public class BBSDao implements BBSDaoImpl
 		
 		String replyBase = "";
 		int replyCount = 1;
+		
+		////경우의 수 계산
+		/**
+		 * 1. reply가 null일 경우
+		 * 1.1 reply가 없을 경우
+		 * 		- A를 단다
+		 * 1.2 reply가 있을 경우
+		 * 		- B 이하를 단다
+		 * 2. reply가 Alpha일 경우
+		 * 2.1 reply가 없을 경우
+		 * 		- AA를 단다
+		 * 2.2 reply가 있을 경우
+		 * 		- AB이하를 단다
+		 * */
+		
 				
 		//답글이 없는 원글일 경우는 스킵한다
+		//FIXME A가 들어가야 하는데 B가 들어가는 문제
 		if (!replyList.isEmpty()) {
 			//답글 베이스
-			replyBase = replyList.get(0);
+			replyBase = replyList.get(0)==null?"":replyList.get(0);
 			//답글 갯수
 			replyCount = replyList.size();
 		}
@@ -326,6 +342,8 @@ public class BBSDao implements BBSDaoImpl
 		//달아야 할 답글 문자열
 							//AA(Base) + A~Z
 		String reply = replyBase + String.valueOf((char)(65+replyCount-1));	
+		System.out.println(replyBase);
+		System.out.println(reply);
 		
 		String columnSql = "category,user_id,title,content,status,count,ancestor,reply";
 		
@@ -353,16 +371,12 @@ public class BBSDao implements BBSDaoImpl
 	}
 	
 	private List<String> countReply(BBSDto dto) {
-		String sql = " SELECT REPLY FROM BBS "
-				+ " WHERE REPLY LIKE ("
-					+ " SELECT CONCAT(ifnull(REPLY,''),'%') FROM BBS	WHERE SEQ = ?"
-				+ " )"
-				+ " AND length(reply) <= ("
-					+ " SELECT ifnull(length(REPLY),0)+1 FROM BBS WHERE SEQ = ?"
-				+ " )"
-				+ " AND ANCESTOR = ("
-					+ " SELECT ANCESTOR FROM BBS WHERE SEQ = ?"
-				+ " )";
+		String sql = " SELECT REPLY FROM BBS"
+				+ " WHERE ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = ?)"
+				+ " AND length(reply) <= (SELECT ifnull(length(REPLY),0)+1 FROM BBS WHERE SEQ = ?)"
+				+ " OR REPLY IS NULL"
+				+ " AND ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = ?)"
+				+ " ORDER BY reply asc";
 		
 		Connection conn = null;
 		PreparedStatement psmt = null;

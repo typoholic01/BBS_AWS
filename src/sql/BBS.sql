@@ -9,7 +9,8 @@ CREATE TABLE BBS (
 	create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	ancestor INT(11) UNSIGNED NOT NULL,
-	reply	VARCHAR(10),
+	step INT(11) UNSIGNED NOT NULL,
+	depth INT(11) UNSIGNED NOT NULL,
 	PRIMARY KEY(seq)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -42,6 +43,7 @@ SELECT seq,category,user_id,title,content,status,count,create_at,updated_at,ance
 UPDATE BBS SET TITLE = '안녕',  CONTENT = '방가'  WHERE SEQ = 3
 
 SELECT * FROM BBS
+WHERE REPLY IS NULL
 WHERE ANCESTOR = 1;
 
 
@@ -65,10 +67,51 @@ AND (
 
 (SELECT CONCAT(ifnull(REPLY,''),'%') FROM BBS	WHERE SEQ = 5)
 
-SELECT REPLY FROM BBS 
-WHERE REPLY LIKE (SELECT CONCAT(ifnull(REPLY,''),'%') FROM BBS	WHERE SEQ = 2)
-AND length(reply) <= (SELECT ifnull(length(REPLY),0)+1 FROM BBS WHERE SEQ = 2)
-AND ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = 2)
+--자기자신이 포함 안되는 것이 문제
+SELECT * FROM BBS 
+WHERE REPLY LIKE (SELECT CONCAT(ifnull(REPLY,''),'%') FROM BBS	WHERE SEQ = 20)		
+OR REPLY IS NULL																	
+AND ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = 20)
+AND length(reply) <= (SELECT ifnull(length(REPLY),0)+1 FROM BBS WHERE SEQ = 20)
+ORDER BY reply asc
+
+--자기자신이 포함 안되는 것이 문제
+SELECT * FROM BBS 
+WHERE REPLY LIKE (SELECT CONCAT(ifnull(REPLY,''),'%') FROM BBS	WHERE SEQ = 20)		
+OR REPLY IS NULL																	
+AND ANCESTOR = 20
+AND length(reply) <= 1
+ORDER BY reply asc
+--NULL을 제외시키는 코드
+--NULL 포함
+SELECT * FROM (
+	SELECT * FROM BBS
+	WHERE REPLY IS NULL
+	AND ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = 20)
+)
+
+/**
+ * 1. 같은 조상을 가진 글들을 취합
+ * 2. 같은 단계의 글만 포함
+ * 3. NULL값 원문일 경우 NULL을 포함
+ * 
+ * */
+
+-- 1단계
+SELECT * FROM BBS
+WHERE ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = 20)
+
+-- 2단계
+SELECT * FROM BBS
+WHERE ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = 20)
+AND length(reply) <= (SELECT ifnull(length(REPLY),0)+1 FROM BBS WHERE SEQ = 20)
+
+-- 3단계
+SELECT * FROM BBS
+WHERE ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = 20)
+AND length(reply) <= (SELECT ifnull(length(REPLY),0)+1 FROM BBS WHERE SEQ = 20)
+OR REPLY IS NULL
+AND ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = 20)
 
  INSERT INTO BBS(category,user_id,title,content,status,count,ancestor,reply)  VALUES( ?,?,?,?,?,0,( SELECT * FROM ( SELECT ancestor FROM BBS WHERE SEQ = 20 ) AS A),65) 
  
