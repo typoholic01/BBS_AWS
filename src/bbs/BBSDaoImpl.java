@@ -13,7 +13,8 @@ public interface BBSDaoImpl
 	public List<BBSDto> getBbsList(int cur_page, String s_type, String q);
 	
 	public BBSDto getBbs(int seq);
-	public void updateBbs(int seq, BBSDto dto);
+	public void updateBbs(BBSDto dto);
 	public void deleteBbs(int seq);
+	public void replyBbs(BBSDto dto);
 
 }

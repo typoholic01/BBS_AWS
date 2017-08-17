@@ -40,3 +40,40 @@ limit 0, 10
 SELECT seq,category,user_id,title,content,status,count,create_at,updated_at,ancestor,reply FROM BBS  WHERE category = 'notice'  AND title LIKE '%%' ORDER BY ancestor desc,reply asc  limit 0,10
 
 UPDATE BBS SET TITLE = '안녕',  CONTENT = '방가'  WHERE SEQ = 3
+
+SELECT * FROM BBS
+WHERE ANCESTOR = 1;
+
+
+
+
+SELECT REPLY FROM BBS 
+WHERE ANCESTOR = 1
+AND (
+	SELECT ifnull(REPLY,0)+1 FROM BBS
+	WHERE SEQ = 1
+) = LENGTH(REPLY)
+SELECT ifnull(REPLY,0) FROM BBS
+WHERE SEQ = 1;
+
+SELECT count(seq) FROM BBS 
+WHERE ANCESTOR = 1
+AND (
+	SELECT ifnull(REPLY,0)+1 FROM BBS
+	WHERE SEQ = 1
+) = LENGTH(REPLY)
+
+(SELECT CONCAT(ifnull(REPLY,''),'%') FROM BBS	WHERE SEQ = 5)
+
+SELECT REPLY FROM BBS 
+WHERE REPLY LIKE (SELECT CONCAT(ifnull(REPLY,''),'%') FROM BBS	WHERE SEQ = 2)
+AND length(reply) <= (SELECT ifnull(length(REPLY),0)+1 FROM BBS WHERE SEQ = 2)
+AND ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = 2)
+
+ INSERT INTO BBS(category,user_id,title,content,status,count,ancestor,reply)  VALUES( ?,?,?,?,?,0,( SELECT * FROM ( SELECT ancestor FROM BBS WHERE SEQ = 20 ) AS A),65) 
+ 
+  INSERT INTO BBS(category,user_id,title,content,status,count,ancestor,reply)  
+  VALUES( 'notice','123@gmail.com','re:테스트','ㅅㄷㄴㅅ','published',0,( SELECT * FROM ( SELECT ancestor FROM BBS WHERE SEQ = 28 )as sub),'A') 
+  
+  INSERT INTO BBS(category,user_id,title,content,status,count,ancestor,reply)  
+  VALUES( 'general','notice','123@gmail.com','ㅅㄷㄴ','ㅅㄷㄴ',0,( SELECT * FROM ( SELECT ancestor FROM BBS WHERE SEQ = 27 ) AS sub),'AA') 

@@ -48,11 +48,22 @@ public class BBSDto implements Serializable
 		this.ancestor = ancestor;
 		this.reply = reply;
 	}
-
-	public BBSDto(String title, String content) {
+	
+	public BBSDto(int seq, String title, String content) {
 		super();
+		this.seq = seq;
 		this.title = title;
 		this.content = content;
+	}	
+
+	public BBSDto(int seq, String category, String user_id, String title, String content, String status) {
+		super();
+		this.seq = seq;
+		this.category = category;
+		this.user_id = user_id;
+		this.title = title;
+		this.content = content;
+		this.status = status;
 	}
 
 	@Override

@@ -76,6 +76,7 @@ name="content">${bbs.content }
 <button onclick="location.href='./modify?seq=${bbs.seq}'">수정</button>
 <button onclick="location.href='./delete?seq=${bbs.seq}'">삭제</button>
 </c:if>
+<button onclick="location.href='./reply?seq=${bbs.seq}'">답글</button>
 </div>
 
 <a href='./list'>글 목록</a>

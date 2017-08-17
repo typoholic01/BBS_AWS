@@ -16,9 +16,9 @@ public class BBSCtrl
 	}
 	
 	//글쓰기
-	public boolean writeBbs(String category, String user_id, String title, String content, String status, int parent)
+	public boolean writeBbs(String category, String user_id, String title, String content, String status, int ancestor)
 	{
-		BBSDto bbs = new BBSDto(category, user_id, title, content, status, parent);
+		BBSDto bbs = new BBSDto(category, user_id, title, content, status, ancestor);
 		
 		System.out.println("BBSCtrl: "+bbs.toString());
 		
@@ -39,12 +39,19 @@ public class BBSCtrl
 	public BBSDto getBbs(int seq) {
 		return bbsSer.getBbs(seq);
 	}
-	public void updateBbs(int seq, BBSDto dto) {
-		bbsSer.updateBbs(seq, dto);
+	public void updateBbs(int seq, String title, String content) {
+		BBSDto dto = new BBSDto(seq, title, content);
+		bbsSer.updateBbs(dto);
 		
 	}
 	public void deleteBbs(int seq) {
 		bbsSer.deleteBbs(seq);
+		
+	}
+	public void replyBbs(int seq, String category, String user_id, String title, String content, String status) {
+		BBSDto dto = new BBSDto(seq, category, user_id, title, content, status);
+		
+		bbsSer.replyBbs(dto);
 		
 	}
 }

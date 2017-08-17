@@ -280,7 +280,7 @@ public class BBSDao implements BBSDaoImpl
 	}
 
 	@Override
-	public void updateBbs(int seq, BBSDto dto) {
+	public void updateBbs(BBSDto dto) {
 		String sql = " UPDATE BBS SET "
 				+ " TITLE = ?, "
 				+ " CONTENT = ? "
@@ -288,12 +288,9 @@ public class BBSDao implements BBSDaoImpl
 		
 		List<Object> queryList = new ArrayList<>();
 		
-		System.out.println(dto.toString());
-		System.out.println(seq);
-		
 		queryList.add(dto.getTitle());
 		queryList.add(dto.getContent());
-		queryList.add(seq);
+		queryList.add(dto.getSeq());
 		
 		DBConnection.executeUpdates(sql, queryList);
 		
@@ -308,5 +305,92 @@ public class BBSDao implements BBSDaoImpl
 		
 		DBConnection.executeUpdate(sql, query);
 		
-	}	
+	}
+
+	@Override
+	public void replyBbs(BBSDto dto) {
+		//답글 순서를 구한다
+		List<String> replyList = countReply(dto);		
+		
+		String replyBase = "";
+		int replyCount = 1;
+				
+		//답글이 없는 원글일 경우는 스킵한다
+		if (!replyList.isEmpty()) {
+			//답글 베이스
+			replyBase = replyList.get(0);
+			//답글 갯수
+			replyCount = replyList.size();
+		}
+		
+		//달아야 할 답글 문자열
+							//AA(Base) + A~Z
+		String reply = replyBase + String.valueOf((char)(65+replyCount-1));	
+		
+		String columnSql = "category,user_id,title,content,status,count,ancestor,reply";
+		
+		String sql = " INSERT INTO BBS("+columnSql+") "
+				+ " VALUES("
+				+ " ?,?,?,?,?,0,("
+				+ " SELECT * FROM ("
+				+ " SELECT ancestor FROM BBS WHERE SEQ = ?"
+				+ " ) AS sub),?) ";
+		
+		System.out.println(sql);
+		
+		List<Object> queryList = new ArrayList<>();
+		
+		queryList.add(dto.getCategory());
+		queryList.add(dto.getUser_id());
+		queryList.add(dto.getTitle());
+		queryList.add(dto.getContent());
+		queryList.add(dto.getStatus());
+		queryList.add(dto.getSeq());
+		queryList.add(reply);
+		
+		DBConnection.executeUpdates(sql, queryList);
+		
+	}
+	
+	private List<String> countReply(BBSDto dto) {
+		String sql = " SELECT REPLY FROM BBS "
+				+ " WHERE REPLY LIKE ("
+					+ " SELECT CONCAT(ifnull(REPLY,''),'%') FROM BBS	WHERE SEQ = ?"
+				+ " )"
+				+ " AND length(reply) <= ("
+					+ " SELECT ifnull(length(REPLY),0)+1 FROM BBS WHERE SEQ = ?"
+				+ " )"
+				+ " AND ANCESTOR = ("
+					+ " SELECT ANCESTOR FROM BBS WHERE SEQ = ?"
+				+ " )";
+		
+		Connection conn = null;
+		PreparedStatement psmt = null;
+		ResultSet rs = null;
+		
+		List<String> replylist = new ArrayList<>();
+		
+		try {
+			conn = DBConnection.getConnection();
+			psmt = conn.prepareStatement(sql);
+			psmt.setInt(1, dto.getSeq());
+			psmt.setInt(2, dto.getSeq());
+			psmt.setInt(3, dto.getSeq());
+			rs = psmt.executeQuery();			
+			
+			while (rs.next()) {
+				String reply = rs.getString(1);
+				replylist.add(reply);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBConnection.close(conn, psmt, rs);
+		}
+		
+		System.out.println(replylist.toString());
+		
+		return replylist;
+	} 
 }

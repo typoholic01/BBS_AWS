@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import bbs.BBSDto;
 import bbs.PaginationBeans;
@@ -109,12 +110,10 @@ public class BoardFrontController extends HttpServlet {
 			title = req.getParameter("title");
 			content = req.getParameter("content");
 			
-			BBSDto dto = new BBSDto(title, content);
-			
-			d.BBSCtrl.updateBbs(seq,dto);
+			d.BBSCtrl.updateBbs(seq, title, content);
 			
 			//보내기
-			dispatch("/bbs/notice/list", req, resp);
+			dispatch("/bbs/notice/detail", req, resp);
 			
 			break;
 			
@@ -129,6 +128,26 @@ public class BoardFrontController extends HttpServlet {
 			
 			break;
 			
+		case "/bbs/notice/reply":			
+			//보내기
+			dispatch("/board/bbs_notice_reply.jsp", req, resp);
+			
+			break;
+		case "/bbs/notice/replyAf":	
+			//seq를 받아온다
+			seq = Integer.parseInt(req.getParameter("seq"));
+			user_id = req.getParameter("user_id");
+			title = req.getParameter("title");
+			content = req.getParameter("content");
+			
+			//답글을 입력한다
+			d.BBSCtrl.replyBbs(seq, "notice", user_id, title, content, "general");
+			
+			//목록으로 돌아간다
+			dispatch("/bbs/notice/list", req, resp);
+			
+			break;
+			
 		default:
 			break;
 		}
@@ -137,7 +156,6 @@ public class BoardFrontController extends HttpServlet {
 	}
 	
 	public void dispatch(String urls, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		//TODO 뒤로가기를 두번해야 하는 문제. 선생님께 여쭤볼 것
 		RequestDispatcher dispatch = req.getRequestDispatcher(urls);
 		dispatch.forward(req, resp);
 	}

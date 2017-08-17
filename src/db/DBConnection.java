@@ -12,10 +12,14 @@ import java.util.List;
 import bbs.BBSDto;
 
 public class DBConnection {
+	public static final String className = "com.mysql.jdbc.Driver";
+	public static final String address = "jdbc:mysql://localhost:3306/hospital?useUnicode=yes&characterEncoding=UTF-8";
+	public static final String user = "admin";
+	public static final String password = "secret";
 	
 	public static void initConnect() {
 		try {
-			Class.forName(DBSetting.className);
+			Class.forName(className);
 			
 			System.out.println("Driver Loading Success!!");
 			
@@ -24,14 +28,9 @@ public class DBConnection {
 		}
 	}
 	
-	public static Connection getConnection() {
+	public static Connection getConnection() throws SQLException {
 		Connection conn = null;
-		try {
-			conn = DriverManager.getConnection(DBSetting.address, DBSetting.user, DBSetting.password);
-			System.out.println("DB Connection Success!!");		
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		conn = DriverManager.getConnection(address, user, password);
 		return conn;
 	}
 	
@@ -70,7 +69,7 @@ public class DBConnection {
 			conn = getConnection();
 			
 			psmt = conn.prepareStatement(sql);
-			
+			System.out.println("1/6 통과");
 			int i = 1;
 			for (Object query : queryList) {
 				if (query instanceof String) {
@@ -80,13 +79,17 @@ public class DBConnection {
 				}
 				i++;
 			}
+			System.out.println("2/6 통과");
 			
+			System.out.println(psmt.toString());
 			count = psmt.executeUpdate();
+			System.out.println("3/6 통과");
 			
 		} catch (SQLException e) {			
 			System.out.println(e.getMessage());
 		} finally{
 			close(conn, psmt);
+			System.out.println("6/6 통과");
 		}
 				
 		return count>0?true:false;
