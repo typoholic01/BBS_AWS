@@ -312,47 +312,47 @@ public class BBSDao implements BBSDaoImpl
 		//답글 순서를 구한다
 		List<String> replyList = countReply(dto);		
 		
-		String replyBase = "";
-		int replyCount = 1;
-		
-		////경우의 수 계산
 		/**
-		 * 1. reply가 null일 경우
-		 * 1.1 reply가 없을 경우
-		 * 		- A를 단다
-		 * 1.2 reply가 있을 경우
-		 * 		- B 이하를 단다
-		 * 2. reply가 Alpha일 경우
-		 * 2.1 reply가 없을 경우
-		 * 		- AA를 단다
-		 * 2.2 reply가 있을 경우
-		 * 		- AB이하를 단다
+		 * 1. 원글 reply를 받아온다
+		 * 2. 원글 ancestor replylist를 받아온다
+		 * 3. replylist 단계를 비교한다
+		 * 4. 단계를 추가한다
+		 * 5. return일 경우 : 단계를 변경한다(A->B->C->)
+		 * 
 		 * */
 		
-				
-		//답글이 없는 원글일 경우는 스킵한다
-		//FIXME A가 들어가야 하는데 AB가 들어가는 문제
-		if (!replyList.isEmpty()) {
-			//답글 베이스
-			replyBase = replyList.get(0)==null?"":replyList.get(0);
-			//답글 갯수
-			replyCount = replyList.size();
-		}
+		String replyBase = dto.getReply();
 		
-		//달아야 할 답글 문자열
-							//AA(Base) + A~Z
-		String reply = replyBase + String.valueOf((char)(65+replyCount-1));	
+		if (replyBase == null) {
+			replyBase = "";
+		}
+		System.out.println("replyBase 길이: "+replyBase.length());
+		char replyStep = 'A';
+		String reply = "";
+		
 		System.out.println(replyBase);
+		
+		//스위칭 불리언
+		boolean isDepthReply = false;
+		
+		for (String string : replyList) {
+			System.out.println("루프: "+string);
+			
+			if (string != null&&!string.equals("")&&(replyBase.length()+1)==string.length()) {
+				System.out.println("길이: "+string.length());
+				isDepthReply = true;
+				replyStep += 1;
+				System.out.println("변경된 step: "+replyStep);
+			}
+		}
+		reply = replyBase + replyStep;
+		
 		System.out.println(reply);
 		
 		String columnSql = "category,user_id,title,content,status,count,ancestor,reply";
-		
 		String sql = " INSERT INTO BBS("+columnSql+") "
 				+ " VALUES("
-				+ " ?,?,?,?,?,0,("
-				+ " SELECT * FROM ("
-				+ " SELECT ancestor FROM BBS WHERE SEQ = ?"
-				+ " ) AS sub),?) ";
+				+ " ?,?,?,?,?,0,?,?) ";
 		
 		System.out.println(sql);
 		
@@ -363,11 +363,11 @@ public class BBSDao implements BBSDaoImpl
 		queryList.add(dto.getTitle());
 		queryList.add(dto.getContent());
 		queryList.add(dto.getStatus());
-		queryList.add(dto.getSeq());
+		queryList.add(dto.getAncestor());
 		queryList.add(reply);
 		
-		DBConnection.executeUpdates(sql, queryList);
-		
+		DBConnection.executeUpdates(sql, queryList);		
+		System.out.println(reply);		
 	}
 	
 	private List<String> countReply(BBSDto dto) {

@@ -38,6 +38,8 @@ input {
 
 <form action="./replyAf" method="post">
 <input type="hidden" name="seq" value="${param.seq }">
+<input type="hidden" name="ancestor" value="${bbs.ancestor }">
+<input type="hidden" name="reply" value="${bbs.reply }">
 
 <table border="1">
 <col width="200"><col width="500">

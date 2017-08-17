@@ -48,8 +48,8 @@ public class BBSCtrl
 		bbsSer.deleteBbs(seq);
 		
 	}
-	public void replyBbs(int seq, String category, String user_id, String title, String content, String status) {
-		BBSDto dto = new BBSDto(seq, category, user_id, title, content, status);
+	public void replyBbs(int seq, String category, String user_id, String title, String content, String status, int ancestor, String reply) {
+		BBSDto dto = new BBSDto(seq, category, user_id, title, content, status, ancestor, reply);
 		
 		bbsSer.replyBbs(dto);
 		

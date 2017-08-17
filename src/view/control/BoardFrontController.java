@@ -45,8 +45,8 @@ public class BoardFrontController extends HttpServlet {
 		req.setCharacterEncoding("utf-8");						//utf-8 설정
 		resp.setContentType("text/html; charset=UTF-8");
 		
-		String category,user_id,title,content,status;		//param
-		int seq;
+		String category,user_id,title,content,status,reply;		//param
+		int seq,ancestor;
 		BBSDto bbs = null;
 		
 		switch (command) {
@@ -129,6 +129,15 @@ public class BoardFrontController extends HttpServlet {
 			break;
 			
 		case "/bbs/notice/reply":			
+			//seq를 받아온다
+			seq = Integer.parseInt(req.getParameter("seq"));
+			
+			//게시물을 받아온다
+			bbs = d.BBSCtrl.getBbs(seq);
+			
+			//req에 넣는다
+			req.setAttribute("bbs", bbs);
+			
 			//보내기
 			dispatch("/board/bbs_notice_reply.jsp", req, resp);
 			
@@ -139,9 +148,11 @@ public class BoardFrontController extends HttpServlet {
 			user_id = req.getParameter("user_id");
 			title = req.getParameter("title");
 			content = req.getParameter("content");
+			ancestor = Integer.parseInt(req.getParameter("ancestor"));
+			reply = req.getParameter("reply");
 			
 			//답글을 입력한다
-			d.BBSCtrl.replyBbs(seq, "notice", user_id, title, content, "general");
+			d.BBSCtrl.replyBbs(seq, "notice", user_id, title, content, "general",ancestor,reply);
 			
 			//목록으로 돌아간다
 			dispatch("/bbs/notice/list", req, resp);
