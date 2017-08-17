@@ -9,8 +9,7 @@ CREATE TABLE BBS (
 	create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	ancestor INT(11) UNSIGNED NOT NULL,
-	step INT(11) UNSIGNED NOT NULL,
-	depth INT(11) UNSIGNED NOT NULL,
+	reply VARCHAR(10),
 	PRIMARY KEY(seq)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -46,7 +45,22 @@ SELECT * FROM BBS
 WHERE REPLY IS NULL
 WHERE ANCESTOR = 1;
 
+SELECT STEP,DEPTH FROM BBS WHERE SEQ = ?;
 
+
+/*
+ * Null
+ * A
+ * AA
+ * B 
+ * BA
+ * BAA
+ * BB
+ * BBA
+ * C
+ * CA
+ * 
+ * */
 
 
 SELECT REPLY FROM BBS 
@@ -92,19 +106,19 @@ SELECT * FROM (
 
 /**
  * 1. 같은 조상을 가진 글들을 취합
- * 2. 같은 단계의 글만 포함
+ * 2. 자기 이상의 단계만 취합
  * 3. NULL값 원문일 경우 NULL을 포함
  * 
  * */
 
 -- 1단계
 SELECT * FROM BBS
-WHERE ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = 20)
+WHERE ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = 1)
 
 -- 2단계
-SELECT * FROM BBS
-WHERE ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = 20)
-AND length(reply) <= (SELECT ifnull(length(REPLY),0)+1 FROM BBS WHERE SEQ = 20)
+-- null을 0으로 전환한 테이블을 만든 후 재생성
+SELECT seq,category,user_id,title,content,status,count,create_at,updated_at,ancestor,length(reply) FROM BBS
+WHERE ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = 1)
 
 -- 3단계
 SELECT * FROM BBS
@@ -112,6 +126,9 @@ WHERE ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = 20)
 AND length(reply) <= (SELECT ifnull(length(REPLY),0)+1 FROM BBS WHERE SEQ = 20)
 OR REPLY IS NULL
 AND ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = 20)
+
+SELECT REPLY FROM BBS WHERE ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = 1)
+ORDER BY reply asc
 
  INSERT INTO BBS(category,user_id,title,content,status,count,ancestor,reply)  VALUES( ?,?,?,?,?,0,( SELECT * FROM ( SELECT ancestor FROM BBS WHERE SEQ = 20 ) AS A),65) 
  

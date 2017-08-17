@@ -331,7 +331,7 @@ public class BBSDao implements BBSDaoImpl
 		
 				
 		//답글이 없는 원글일 경우는 스킵한다
-		//FIXME A가 들어가야 하는데 B가 들어가는 문제
+		//FIXME A가 들어가야 하는데 AB가 들어가는 문제
 		if (!replyList.isEmpty()) {
 			//답글 베이스
 			replyBase = replyList.get(0)==null?"":replyList.get(0);
@@ -371,11 +371,7 @@ public class BBSDao implements BBSDaoImpl
 	}
 	
 	private List<String> countReply(BBSDto dto) {
-		String sql = " SELECT REPLY FROM BBS"
-				+ " WHERE ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = ?)"
-				+ " AND length(reply) <= (SELECT ifnull(length(REPLY),0)+1 FROM BBS WHERE SEQ = ?)"
-				+ " OR REPLY IS NULL"
-				+ " AND ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = ?)"
+		String sql = " SELECT REPLY FROM BBS WHERE ANCESTOR = (SELECT ANCESTOR FROM BBS WHERE SEQ = ?) "
 				+ " ORDER BY reply asc";
 		
 		Connection conn = null;
@@ -388,8 +384,6 @@ public class BBSDao implements BBSDaoImpl
 			conn = DBConnection.getConnection();
 			psmt = conn.prepareStatement(sql);
 			psmt.setInt(1, dto.getSeq());
-			psmt.setInt(2, dto.getSeq());
-			psmt.setInt(3, dto.getSeq());
 			rs = psmt.executeQuery();			
 			
 			while (rs.next()) {
