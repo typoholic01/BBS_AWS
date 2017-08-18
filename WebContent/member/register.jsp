@@ -6,7 +6,7 @@
 <html>
 <head>
 <script type="text/javascript">
-history.pushState(null, " ", "${pageContext.request.contextPath}/account/register");
+history.replaceState(null, " ", "${pageContext.request.contextPath}/account/register");
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">

@@ -5,7 +5,7 @@
 <html>
 <head>
 <script type="text/javascript">
-history.pushState(null, " ", "${pageContext.request.contextPath}/account/login");
+history.replaceState(null, " ", "${pageContext.request.contextPath}/account/login");
 </script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
